@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -157,6 +160,7 @@ public class GameActivity extends Activity {
                                     }
                                 }else{
                                     if(startPosition==33) {
+                                        Variables.leftedCards = leftedCards;
                                         card.setVisibility(View.GONE);
                                         removeOtherCards(leftedCards);
                                         isRemoved = true;
@@ -196,6 +200,7 @@ public class GameActivity extends Activity {
         thirdRow.removeAllViews();
 
         int i = 0;
+        final int[] pairedClicked = {0};
         final String[] interpretation = {""};
 
         for(final Card card : leftedCards){
@@ -229,24 +234,34 @@ public class GameActivity extends Activity {
             firstCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Card cardOver = getRandomCard();
-                    Picasso.with(GameActivity.this).load(card.imageId).into(cardView);
-                    Picasso.with(GameActivity.this).load(cardOver.imageId).into(cardBackView);
-                    ViewGroup.MarginLayoutParams marginParams = new ViewGroup.MarginLayoutParams(cardBackView.getLayoutParams());
-                    marginParams.setMargins(0, 0, 25, 0);
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(marginParams);
-                    cardBackView.setLayoutParams(layoutParams);
-                    cardBackView.setVisibility(View.VISIBLE);
-                    utils.SlideLeft(cardView, GameActivity.this, "fast");
-                    utils.SlideLeft(cardBackView, GameActivity.this, "slow");
-                    interpretation[0] = interpretation[0] +card.desc+" / "+cardOver.desc+"\n";
-                    interpretationView.setText(interpretation[0]);
-                    firstCard.setClickable(false);
-                }
+                        if (pairedClicked[0]<8){
+                            Card cardOver = getRandomCard();
+                            Variables.leftedCards.add(cardOver);
+                            Picasso.with(GameActivity.this).load(card.imageId).into(cardView);
+                            Picasso.with(GameActivity.this).load(cardOver.imageId).into(cardBackView);
+                            ViewGroup.MarginLayoutParams marginParams = new ViewGroup.MarginLayoutParams(cardBackView.getLayoutParams());
+                            marginParams.setMargins(0, 0, 25, 0);
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(marginParams);
+                            cardBackView.setLayoutParams(layoutParams);
+                            cardBackView.setVisibility(View.VISIBLE);
+                            utils.SlideLeft(cardView, GameActivity.this, "fast");
+                            utils.SlideLeft(cardBackView, GameActivity.this, "slow");
+                            interpretation[0] = interpretation[0] +card.desc+" / "+cardOver.desc+"\n";
+                            interpretationView.setText(interpretation[0]);
+                            firstCard.setClickable(false);
+                            if(pairedClicked[0]==7) {
+                                Button mixAgainBt = (Button)findViewById(R.id.bt_mix_again);
+                                mixAgainBt.setVisibility(View.VISIBLE);
+                            }
+                            pairedClicked[0]++;
+                        }
+                    }
+
             });
             i++;
         }
     }
+
 
     private void removeOtherCards(final ArrayList<Card> leftedCards) {
         //obrisi sve karte sa view-a pa prerasporedi karte
@@ -389,4 +404,8 @@ public class GameActivity extends Activity {
         return -1;
     }
 
+    public void MixAgain(View view) {
+        Intent i = new Intent(GameActivity.this, SecondDealActivity.class);
+        startActivity(i);
+    }
 }
