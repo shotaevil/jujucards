@@ -13,7 +13,6 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -88,17 +87,17 @@ public class GameActivity extends Activity {
 
         firstDeal = new ArrayList<Card>();
         LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View mainView = mainInflater.inflate(R.layout.card, null);
-        final ImageView card = (ImageView)mainView.findViewById(R.id.card);
+//        final View mainView = mainInflater.inflate(R.layout.card, null);
+        final ImageView card = (ImageView) findViewById(R.id.iv_stack);
         card.getLayoutParams().width = (int)(getWidth() /10);
-        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(card);
+//        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(card);
 
         utils = new Utils();
         card.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadow = new View.DragShadowBuilder(mainView);
+                View.DragShadowBuilder shadow = new View.DragShadowBuilder(card);
                 v.startDrag(data, shadow, null, 0);
                 Log.v("Position TOUCH", "X: "+event.getX()+" Y: "+event.getY());
                 return true;
@@ -186,7 +185,7 @@ public class GameActivity extends Activity {
                 return null;
             }
         });
-        cardStack.addView(mainView);
+//        cardStack.addView(mainView);
 
         setCardPanelRow(0, 8, firstRow);
         setCardPanelRow(8, 16, secondRow);
