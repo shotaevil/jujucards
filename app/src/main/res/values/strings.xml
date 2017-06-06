@@ -33,6 +33,7 @@
     <string name="zandar_tref">razgovor, važan poziv</string>
     <string name="dama_tref">nesreća (nešto negativno)</string>
     <string name="kralj_tref">stariji gospodin</string>
+    <string name="choose_card">Odaberite odgovarajuću kartu:</string>
 
     <string-array name="age_rang">
         <item>manje od 35</item>

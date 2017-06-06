@@ -9,6 +9,7 @@ public class User {
     private String age;
     private String gender;
     private String relationshipStatus;
+    private Card cardPicked;
 
     public String getName() {
         return name;
@@ -42,13 +43,19 @@ public class User {
         this.relationshipStatus = relationshipStatus;
     }
 
+    public Card getCardPicked() {
+        return cardPicked;
+    }
+
+    public void setCardPicked(Card cardPicked) {
+        this.cardPicked = cardPicked;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
-                ", age='" + age + '\'' +
-                ", gender='" + gender + '\'' +
-                ", relationshipStatus='" + relationshipStatus + '\'' +
+                ", cardPicked=" + cardPicked +
                 '}';
     }
 }

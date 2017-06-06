@@ -24,73 +24,74 @@
             android:hint="Unesite ime"/>
 
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/ll_gender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="5dp">
+    <!--<LinearLayout-->
+    <!--android:id="@+id/ll_gender"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_marginTop="5dp">-->
 
-        <TextView
-            android:id="@+id/tv_gender_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Izaberite pol: "/>
+    <!--<TextView-->
+    <!--android:id="@+id/tv_gender_label"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Izaberite pol: "/>-->
 
-        <RadioGroup
-            android:id="@+id/rg_gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <RadioButton
-                android:id="@+id/male"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Muški"/>
-            <RadioButton
-                android:id="@+id/female"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ženski"/>
+    <!--<RadioGroup-->
+    <!--android:id="@+id/rg_gender"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+    <!--<RadioButton-->
+    <!--android:id="@+id/male"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Muški"/>-->
+    <!--<RadioButton-->
+    <!--android:id="@+id/female"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Ženski"/>-->
 
-        </RadioGroup>
+    <!--</RadioGroup>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_gravity="bottom"
         android:layout_marginTop="5dp">
 
         <TextView
             android:id="@+id/tv_age_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Broj godina: "/>
+            android:text="Datum rođenja: " />
 
-        <Spinner
-            android:id="@+id/sp_age"
+        <EditText
+            android:id="@+id/dateOfBirth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/age_rang"/>
+            android:inputType="date" />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:layout_marginTop="5dp">-->
 
-        <TextView
-            android:id="@+id/tv_choose_interests_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Status: "/>
+    <!--<TextView-->
+    <!--android:id="@+id/tv_choose_interests_label"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Status: "/>-->
 
-        <Spinner
-            android:id="@+id/sp_relationship"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/relationship_status"/>
-    </LinearLayout>
+    <!--<Spinner-->
+    <!--android:id="@+id/sp_relationship"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:entries="@array/relationship_status"/>-->
+    <!--</LinearLayout>-->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

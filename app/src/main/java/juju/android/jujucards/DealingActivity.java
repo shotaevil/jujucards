@@ -1,29 +1,21 @@
 package juju.android.jujucards;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 
@@ -54,7 +46,7 @@ public class DealingActivity extends Activity {
         LinearLayout linearLayout = (LinearLayout) firstCard.findViewById(R.id.ll_card_layout);
         cardView = (ImageView) firstCard.findViewById(R.id.card);
         Picasso.with(DealingActivity.this).load(R.drawable.card_back).into(cardView);
-        cardView.getLayoutParams().width = (int) (getHeight() / 10);
+        cardView.getLayoutParams().width = getHeight() / 10;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
         linearLayout.setLayoutParams(params);
         random = new Random();
@@ -98,8 +90,6 @@ public class DealingActivity extends Activity {
             }
         }, intervalTime);
         super.onStart();
-
-
     }
 
     @Override

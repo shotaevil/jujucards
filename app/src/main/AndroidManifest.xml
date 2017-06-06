@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ChoosingCardActivity"
+            android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".DealingActivity" android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".GameActivity" android:screenOrientation="landscape" android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".SecondDealActivity" android:screenOrientation="landscape" android:configChanges="orientation|keyboardHidden" />

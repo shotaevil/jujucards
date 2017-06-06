@@ -33,7 +33,6 @@ import java.util.Random;
  */
 
 public class GameActivity extends Activity {
-    int endPosition = 25;
     int startPosition = 0;
     int remain = 32;
     int choseCardId = -1;
@@ -45,31 +44,10 @@ public class GameActivity extends Activity {
     private LinearLayout firstRow;
     private LinearLayout secondRow;
     private LinearLayout thirdRow;
-    private LinearLayout firstCell;
-    private LinearLayout secondCell;
     private Utils utils;
     private TextView interpretationView;
 
-    /* LOGIKA ZA PRVU KARTU
-    * (razveden && male && age<35) || (ozenjen && male && age<35) - zandar pik
-    * age>60 - kralj tref
-    * age<35 && udata - 7 herc
-    * age<35 && slobodna - dama karo
-     * female && udata - dama herc
-     * covek na polozaju - kralj pik ???
-     * covek na visokom polozaju - kralj karo ???
-     * (udovica || razvedena)&&female - dama pik
-      * age>60 && female - sedam pik
-      * OSTALA ZNACENJA
-      * kuca - kec karo
-      * zelja - 8 herc
-      * ljubav - 7 karo
-      * zdravlje i sreca - 8 karo
-      * vrlo brzo - 7 tref
-      * zivotni uspeh - 10 karo
-      * pare - 10 herc
-      * tajno ili iznenada - 9 karo
-    * */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,19 +56,13 @@ public class GameActivity extends Activity {
         cards = new Card().initializeCards(GameActivity.this);
 
         firstRow = (LinearLayout)findViewById(R.id.ll_first_row);
-        firstCell = (LinearLayout)findViewById(R.id.ll_first_cell);
         secondRow = (LinearLayout)findViewById(R.id.ll_second_row);
-        secondCell = (LinearLayout)findViewById(R.id.ll_second_cell);
         thirdRow = (LinearLayout)findViewById(R.id.ll_third_row);
-        LinearLayout cardStack = (LinearLayout)findViewById(R.id.ll_stack);
         interpretationView = (TextView)findViewById(R.id.tv_interpetation);
 
-        firstDeal = new ArrayList<Card>();
-        LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        final View mainView = mainInflater.inflate(R.layout.card, null);
+        firstDeal = new ArrayList<>();
         final ImageView card = (ImageView) findViewById(R.id.iv_stack);
-        card.getLayoutParams().width = (int)(getWidth() /10);
-//        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(card);
+        card.getLayoutParams().width = getWidth() / 10;
 
         utils = new Utils();
         card.setOnTouchListener(new View.OnTouchListener() {
@@ -134,7 +106,7 @@ public class GameActivity extends Activity {
                             startPosition++;
                         }else{
                             if(startPosition==24){
-                                choseCardId = getFirstCard(Variables.user);
+                                choseCardId = getCardPosition(Variables.user.getCardPicked().name);
                                 Log.v("Choose card id", ""+choseCardId);
                                 if(choseCardId>-1){
                                     View cardView = findViewById(choseCardId);
@@ -209,8 +181,8 @@ public class GameActivity extends Activity {
             final ImageView cardView = (ImageView) firstCard.findViewById(R.id.card);
             final ImageView cardBackView = (ImageView) secondCard.findViewById(R.id.card);
 
-            cardView.getLayoutParams().width = (int) (getWidth() / 10);
-            cardBackView.getLayoutParams().width = (int) (getWidth() / 10 );
+            cardView.getLayoutParams().width = getWidth() / 10;
+            cardBackView.getLayoutParams().width = getWidth() / 10;
 
             cardView.setVisibility(View.VISIBLE);
             cardBackView.setVisibility(View.GONE);
@@ -233,34 +205,33 @@ public class GameActivity extends Activity {
             firstCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        if (pairedClicked[0]<8){
-                            Card cardOver = getRandomCard();
-                            Variables.leftedCards.add(cardOver);
-                            Picasso.with(GameActivity.this).load(card.imageId).into(cardView);
-                            Picasso.with(GameActivity.this).load(cardOver.imageId).into(cardBackView);
-                            ViewGroup.MarginLayoutParams marginParams = new ViewGroup.MarginLayoutParams(cardBackView.getLayoutParams());
-                            marginParams.setMargins(0, 0, 25, 0);
-                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(marginParams);
-                            cardBackView.setLayoutParams(layoutParams);
-                            cardBackView.setVisibility(View.VISIBLE);
-                            utils.SlideLeft(cardView, GameActivity.this, "fast");
-                            utils.SlideLeft(cardBackView, GameActivity.this, "slow");
-                            interpretation[0] = interpretation[0] +card.desc+" / "+cardOver.desc+"\n";
-                            interpretationView.setText(interpretation[0]);
-                            firstCard.setClickable(false);
-                            if(pairedClicked[0]==7) {
-                                Button mixAgainBt = (Button)findViewById(R.id.bt_mix_again);
-                                mixAgainBt.setVisibility(View.VISIBLE);
-                            }
-                            pairedClicked[0]++;
+                    if (pairedClicked[0] < 8) {
+                        Card cardOver = getRandomCard();
+                        Variables.leftedCards.add(cardOver);
+                        Picasso.with(GameActivity.this).load(card.imageId).into(cardView);
+                        Picasso.with(GameActivity.this).load(cardOver.imageId).into(cardBackView);
+                        ViewGroup.MarginLayoutParams marginParams = new ViewGroup.MarginLayoutParams(cardBackView.getLayoutParams());
+                        marginParams.setMargins(0, 0, 25, 0);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(marginParams);
+                        cardBackView.setLayoutParams(layoutParams);
+                        cardBackView.setVisibility(View.VISIBLE);
+                        utils.SlideLeft(cardView, GameActivity.this, "fast");
+                        utils.SlideLeft(cardBackView, GameActivity.this, "slow");
+                        interpretation[0] = interpretation[0] + card.desc + " / " + cardOver.desc + "\n";
+                        interpretationView.setText(interpretation[0]);
+                        firstCard.setClickable(false);
+                        if (pairedClicked[0] == 7) {
+                            Button mixAgainBt = (Button) findViewById(R.id.bt_mix_again);
+                            mixAgainBt.setVisibility(View.VISIBLE);
                         }
+                        pairedClicked[0]++;
                     }
+                }
 
             });
             i++;
         }
     }
-
 
     private void removeOtherCards(final ArrayList<Card> leftedCards) {
         //obrisi sve karte sa view-a pa prerasporedi karte
@@ -306,7 +277,7 @@ public class GameActivity extends Activity {
             final Card cardFace = getRandomCard();
             firstDeal.add(cardFace);
             Picasso.with(GameActivity.this).load(cardFace.imageId).into(card);
-            card.getLayoutParams().width = (int)(getWidth() /10);
+            card.getLayoutParams().width = getWidth() / 10;
             card.setVisibility(View.INVISIBLE);
             card.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -330,67 +301,6 @@ public class GameActivity extends Activity {
         display.getSize(size);
         Log.v("Screen width", "" + size.x);
         return size.x;
-    }
-
-    public int getHeight() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Log.v("Screen height", "" + size.y);
-        return size.y;
-    }
-
-    public int getFirstCard(User user){
-        /*
-
-    * (razveden && male && age<35) || (ozenjen && male && age<35) - zandar pik
-    * male age>60 - kralj tref
-     * covek na polozaju - kralj pik ???
-     * covek na visokom polozaju - kralj karo ???
-     * female && udata - dama herc
-
-         */
-        int cardPosition = -1;
-
-        String age = user.getAge();
-        String relationship = user.getRelationshipStatus();
-        String gender = user.getGender();
-        Log.v("Gender", gender);
-        switch (gender){
-            case "female":{
-                if(relationship.contains("udovica") || relationship.contains("razvedena")){
-                    cardPosition = getCardPosition("dama_pik");
-                }else{
-                    //manje od 35
-                    if(age.contains("manje")){
-                        if(relationship.contains("udata")){
-                            cardPosition = getCardPosition("sedam_herc");
-                        }else{
-                            if(relationship.contains("slobodna") || relationship.contains("vezi")) {
-                                cardPosition = getCardPosition("dama_karo");
-                            }
-                        }
-                    }else{
-                        if((age.contains("35-60") || age.contains("od 60")) && relationship.contains("udata")){
-                            cardPosition = getCardPosition("dama_herc");
-                        }else{
-                            cardPosition = getCardPosition("sedam_pik");
-                        }
-                    }
-                }
-                break;
-            }
-            case "male":{
-                if((relationship.contains("razveden") ||
-                        (relationship.contains("ozenjen"))&& age.contains("manje"))){
-                    cardPosition = getCardPosition("zandar_pik");
-                }else{
-                    cardPosition = getCardPosition("kralj_tref");
-                }
-                break;
-            }
-        }
-        return cardPosition;
     }
 
     private int getCardPosition(String cardName) {
