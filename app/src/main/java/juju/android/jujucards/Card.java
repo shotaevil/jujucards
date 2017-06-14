@@ -13,6 +13,7 @@ public class Card {
     public String name;
     public String desc;
     public int imageId;
+    public int parentViewId;
 
     public Card(String name, int imageId, String desc) {
         this.name = name;
@@ -20,11 +21,12 @@ public class Card {
         this.desc = desc;
     }
 
-    public Card(int id, int cardImage, String cardName, String cardDesc) {
+    public Card(int id, int cardImage, String cardName, String cardDesc, int parentViewId) {
         this.id = id;
         this.name = cardName;
         this.imageId = cardImage;
         this.desc = cardDesc;
+        this.parentViewId = parentViewId;
     }
 
     public Card() {
@@ -50,7 +52,7 @@ public class Card {
         int counter = 0;
         for (int cardImage :
                 cardImages) {
-            Card card = new Card(counter, cardImage, cardNames.get(counter), ctx.getString(cardDesc.get(counter)) );
+            Card card = new Card(counter, cardImage, cardNames.get(counter), ctx.getString(cardDesc.get(counter)), 0);
             results.add(card);
             counter++;
         }

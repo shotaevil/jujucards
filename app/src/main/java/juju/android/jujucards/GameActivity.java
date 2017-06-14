@@ -118,17 +118,17 @@ public class GameActivity extends Activity {
                                 }
                             }else{
                                 if(startPosition>24 && startPosition<33){
-                                    if(choseCardId >= 0){
-                                        View cardView = findViewById(choseCardId);
-                                        ImageView im = (ImageView)cardView.findViewById(R.id.card);
-                                        leftedCards.add(getCardFromDeck(choseCardId));
-                                        im.setBackgroundResource(0);
-                                        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(im);
-                                        choseCardId = -1;
-                                        startPosition++;
-                                    }else {
-                                        Toast.makeText(GameActivity.this, "Označite kartu koju želite da pokrijete", Toast.LENGTH_SHORT).show();
-                                    }
+//                                    if(choseCardId >= 0){
+//                                        View cardView = findViewById(choseCardId);
+//                                        ImageView im = (ImageView)cardView.findViewById(R.id.card);
+//                                        leftedCards.add(getCardFromDeck(choseCardId));
+//                                        im.setBackgroundResource(0);
+//                                        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(im);
+//                                        choseCardId = -1;
+//                                        startPosition++;
+//                                    }else {
+//                                        Toast.makeText(GameActivity.this, "Označite kartu koju želite da pokrijete", Toast.LENGTH_SHORT).show();
+//                                    }
                                 }else{
                                     if(startPosition==33) {
                                         Variables.leftedCards = leftedCards;
@@ -147,15 +147,7 @@ public class GameActivity extends Activity {
                 return true;
             }
 
-            private Card getCardFromDeck(int choseCardId) {
-                for (Card item :
-                        firstDeal) {
-                    if (item.id == choseCardId) {
-                        return item;
-                    }
-                }
-                return null;
-            }
+
         });
 //        cardStack.addView(mainView);
 
@@ -165,6 +157,15 @@ public class GameActivity extends Activity {
 
     }
 
+    private Card getCardFromDeck(int choseCardId) {
+        for (Card item :
+                firstDeal) {
+            if (item.id == choseCardId) {
+                return item;
+            }
+        }
+        return null;
+    }
     private void setNewContentView(final ArrayList<Card> leftedCards) {
         firstRow.removeAllViews();
         secondRow.removeAllViews();
@@ -284,8 +285,16 @@ public class GameActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     if(startPosition>24 && startPosition<33){
-                        card.setBackground(getResources().getDrawable(R.drawable.border));
+                        //card.setBackground(getResources().getDrawable(R.drawable.border));
                         choseCardId = cardFace.id;
+
+                        //View cardView = findViewById(choseCardId);
+                        //ImageView im = (ImageView)cardView.findViewById(R.id.card);
+                        leftedCards.add(getCardFromDeck(choseCardId));
+                        //im.setBackgroundResource(0);
+                        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(card);
+                        choseCardId = -1;
+                        startPosition++;
                     }
                 }
             });
@@ -299,7 +308,6 @@ public class GameActivity extends Activity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Log.v("Screen width", "" + size.x);
         return size.x;
     }
 
@@ -314,6 +322,7 @@ public class GameActivity extends Activity {
     }
 
     public void MixAgain(View view) {
+        GameActivity.this.finish();
         Intent i = new Intent(GameActivity.this, SecondDealActivity.class);
         startActivity(i);
     }

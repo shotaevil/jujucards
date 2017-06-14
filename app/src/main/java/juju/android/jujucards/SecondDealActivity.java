@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -38,7 +39,10 @@ public class SecondDealActivity extends Activity {
     private LinearLayout bottomLayout;
     private int cardThrown = 0;
     private ArrayList<Integer> position;
-
+    Integer[] mladaZenaBasePosition = {4, 1, 7, 3, 5};
+    ArrayList<Card> cardsDrawn = new ArrayList<>();
+    boolean cardBotomHiden = true;
+    int noOfPairs = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,18 +55,23 @@ public class SecondDealActivity extends Activity {
         bottomLayout = (LinearLayout) findViewById(R.id.ll_bottom);
 
         stack = (ImageView)findViewById(R.id.iv_stack);
+        stack.getLayoutParams().width = getWidth() / 10;
+
+        //redosled po kome se redjaju karte
+        position = new ArrayList<>(Arrays.asList(mladaZenaBasePosition));
 
         setDefaultPositions();
 
         //stavlja se prva karta na sredinu
-        View v = findViewById(4);
-        ImageView firstCard = (ImageView) v.findViewById(R.id.card);
-        firstCard.setVisibility(View.VISIBLE);
-        Picasso.with(SecondDealActivity.this).load(cards.get(0).imageId).into(firstCard);
-        cards.remove(0);
+//        View v = findViewById(position.get(0));
+//        ImageView secondCard = (ImageView) v.findViewById(R.id.second_card);
+//        secondCard.setVisibility(View.VISIBLE);
+//        Picasso.with(SecondDealActivity.this).load(cards.get(0).imageId).into(secondCard);
+//        cards.remove(0);
+//        position.remove(0);
+//        cardThrown++;
+        setCardSurface();
 
-        Integer[] mladaZenaBasePosition = {1, 7, 3, 5};
-        position = new ArrayList<Integer>(Arrays.asList(mladaZenaBasePosition));
 
         stack.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -95,13 +104,11 @@ public class SecondDealActivity extends Activity {
 
                     case DragEvent.ACTION_DROP: {
 
-                        setCardSurface();
-
                         return (true);
                     }
 
                     case DragEvent.ACTION_DRAG_ENDED: {
-
+                        setCardSurface();
                         return (true);
                     }
                     default:
@@ -113,20 +120,93 @@ public class SecondDealActivity extends Activity {
     }
 
     private void setCardSurface() {
-        if (position.size() > 0) {
-            View v = findViewById(position.get(0));
-            Card temp = getRandomCard();
-            ImageView firstCard = (ImageView) v.findViewById(R.id.card);
+        if (cardThrown % 5 == 0) {
+            position = new ArrayList<>(Arrays.asList(mladaZenaBasePosition));
+        }
+        int pos = position.get(0);
+        View v = findViewById(pos);
+        ImageView firstCard, secondCard, thirdCard, forthCard;
+        if (cardThrown < 5) {
+            //postavi default slike
+            Card temp;
+            if (pos == 4) {
+                temp = cards.get(0);
+            } else {
+                temp = getRandomCard();
+            }
+            temp.parentViewId = pos;
+            cardsDrawn.add(temp);
+            firstCard = (ImageView) v.findViewById(R.id.second_card);
             firstCard.setVisibility(View.VISIBLE);
             Picasso.with(SecondDealActivity.this).load(temp.imageId).into(firstCard);
-            position.remove(0);
         } else {
-            if (cardThrown == 5) {
-                Log.v("Ostalo karata: ", cards.size() + " " + cards.toString());
+            Log.v("Card remain", "" + cards.size());
+            //preklopi karte i na svaki 5 ciklizam resetuj position
+            if (pos == 4) {
+                if (cardThrown == 5) {
+                    secondCard = (ImageView) v.findViewById(R.id.first_card);
+                    secondCard.getLayoutParams().width = getWidth() / 10;
+                    secondCard.setVisibility(View.VISIBLE);
+                    addRandomCard(pos);
+                    Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(secondCard);
+                } else {
+                    if (cardThrown == 10) {
+                        thirdCard = (ImageView) v.findViewById(R.id.third_card);
+                        thirdCard.getLayoutParams().width = getWidth() / 10;
+                        thirdCard.setVisibility(View.VISIBLE);
+                        addRandomCard(pos);
+                        Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(thirdCard);
+                    } else {
+                        forthCard = (ImageView) v.findViewById(R.id.forth_card);
+                        forthCard.getLayoutParams().width = getWidth() / 10;
+                        forthCard.setVisibility(View.VISIBLE);
+                        addRandomCard(pos);
+                        Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(forthCard);
+                        stack.setVisibility(View.GONE);
+                    }
+                }
+            } else {
+                if (cardThrown < 11) {
+                    secondCard = (ImageView) v.findViewById(R.id.third_card);
+                    secondCard.getLayoutParams().width = getWidth() / 10;
+                    secondCard.setVisibility(View.VISIBLE);
+                    addRandomCard(pos);
+                    Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(secondCard);
+                } else {
+                    thirdCard = (ImageView) v.findViewById(R.id.forth_card);
+                    thirdCard.getLayoutParams().width = getWidth() / 10;
+                    thirdCard.setVisibility(View.VISIBLE);
+                    addRandomCard(pos);
+                    Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(thirdCard);
+                }
             }
         }
+        position.remove(0);
         cardThrown++;
     }
+
+    private void addRandomCard(int position) {
+        Card randomCard = getRandomCard();
+        randomCard.parentViewId = position;
+        cardsDrawn.add(randomCard);
+    }
+
+//        if (position.size() > 0) {
+//            View v = findViewById(position.get(0));
+//            Card temp = getRandomCard();
+//            ImageView firstCard = (ImageView) v.findViewById(R.id.second_card);
+//            firstCard.setVisibility(View.VISIBLE);
+//            Picasso.with(SecondDealActivity.this).load(temp.imageId).into(firstCard);
+//            position.remove(0);
+//        } else {
+//            if (cardThrown == 5) {
+//                position = new ArrayList<>(Arrays.asList(mladaZenaBasePosition));
+//
+//                Log.v("Ostalo karata: ", cards.size() + " " + cards.toString());
+//            }
+//        }
+//        cardThrown++;
+
 
     private Card getRandomCard() {
         int remain = cards.size() - 1;
@@ -144,41 +224,80 @@ public class SecondDealActivity extends Activity {
     private void setDefaultPositions() {
         for (int i = 0; i < 9; i++) {
             LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View mainView = mainInflater.inflate(R.layout.card, null);
-            final ImageView card = (ImageView) mainView.findViewById(R.id.card);
+            final View mainView = mainInflater.inflate(R.layout.card_stack, null);
+            final ImageView firstCard = (ImageView) mainView.findViewById(R.id.forth_card);
+            final ImageView secondCard = (ImageView) mainView.findViewById(R.id.third_card);
+            final ImageView thirdCard = (ImageView) mainView.findViewById(R.id.second_card);
+            final ImageView forthCard = (ImageView) mainView.findViewById(R.id.first_card);
 
-            card.getLayoutParams().width = (int) (getWidth() / 10);
-            card.setVisibility(View.INVISIBLE);
+            firstCard.getLayoutParams().width = getWidth() / 10;
+            secondCard.getLayoutParams().width = getWidth() / 10;
+            thirdCard.getLayoutParams().width = getWidth() / 10;
+            forthCard.getLayoutParams().width = getWidth() / 10;
 
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(card.getLayoutParams());
-            lp.setMargins(50, 0, 50, 0);
-            card.setLayoutParams(lp);
+            firstCard.setVisibility(View.INVISIBLE);
+            secondCard.setVisibility(View.INVISIBLE);
+            thirdCard.setVisibility(View.INVISIBLE);
+            forthCard.setVisibility(View.INVISIBLE);
 
-            Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(card);
+//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(firstCard.getLayoutParams());
+//            lp.setMargins(50, 0, 50, 0);
+//            firstCard.setLayoutParams(lp);
+
+            Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(firstCard);
             mainView.setId(i);
             if (i < 3) {
                 topLayout.addView(mainView);
             } else {
                 if (i < 6) {
-//                    if(i==4){
-//                        View v1 = getNewCard();
-//                        View v2 = getNewCard();
-//                        View v3 = getNewCard();
-//
-//                        v1.setId(9);
-//                        v2.setId(10);
-//                        v3.setId(11);
-//
-//                        middleLayout.addView(v1);
-//                        middleLayout.addView(v2);
-//                        middleLayout.addView(v3);
-//
-//                    }
                     middleLayout.addView(mainView);
                 } else {
                     bottomLayout.addView(mainView);
                 }
             }
+
+            mainView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (stack.getVisibility() == View.GONE) {
+                        showCardsOver(mainView.getId());
+                        Toast.makeText(getApplicationContext(), getInterpetation(mainView.getId()), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                private void showCardsOver(int id) {
+                    ArrayList<Card> cards = new ArrayList<Card>();
+                    for (Card card :
+                            cardsDrawn) {
+                        if (card.parentViewId == id) {
+                            cards.add(card);
+                        }
+                    }
+                    ImageView secondCard = (ImageView) findViewById(id).findViewById(R.id.third_card);
+                    ImageView thirdCard = (ImageView) findViewById(id).findViewById(R.id.forth_card);
+                    Picasso.with(SecondDealActivity.this).load(cards.get(1).imageId).into(secondCard);
+                    Picasso.with(SecondDealActivity.this).load(cards.get(2).imageId).into(thirdCard);
+                    if (id == 4) {
+                        ImageView backCard = (ImageView) findViewById(id).findViewById(R.id.first_card);
+                        Picasso.with(SecondDealActivity.this).load(cards.get(3).imageId).into(backCard);
+                    }
+                }
+
+                private String getInterpetation(int id) {
+                    String result = "";
+                    for (Card card :
+                            cardsDrawn) {
+                        if (card.parentViewId == id) {
+                            if (result.isEmpty()) {
+                                result = card.desc;
+                            } else {
+                                result = result + " / " + card.desc;
+                            }
+                        }
+                    }
+                    return result;
+                }
+            });
         }
     }
 
@@ -187,7 +306,7 @@ public class SecondDealActivity extends Activity {
         final View mainView = mainInflater.inflate(R.layout.card, null);
         final ImageView card = (ImageView) mainView.findViewById(R.id.card);
 
-        card.getLayoutParams().width = (int) (getWidth() / 10);
+        card.getLayoutParams().width = getWidth() / 10;
         card.setVisibility(View.VISIBLE);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(card.getLayoutParams());
@@ -202,7 +321,7 @@ public class SecondDealActivity extends Activity {
         LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View mainView = mainInflater.inflate(R.layout.card, null);
         final ImageView card = (ImageView) mainView.findViewById(R.id.card);
-        card.getLayoutParams().width = (int) (getWidth() / 10);
+        card.getLayoutParams().width = getWidth() / 10;
         return mainView;
     }
 
@@ -211,7 +330,6 @@ public class SecondDealActivity extends Activity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Log.v("Screen width", "" + size.x);
         return size.x;
     }
 }
