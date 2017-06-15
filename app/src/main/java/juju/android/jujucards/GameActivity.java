@@ -40,12 +40,12 @@ public class GameActivity extends Activity {
     private ArrayList<Card> firstDeal;
     ArrayList<Card>leftedCards = new ArrayList<>();
     boolean isRemoved = false;
-    boolean isSelected = false;
     private LinearLayout firstRow;
     private LinearLayout secondRow;
     private LinearLayout thirdRow;
     private Utils utils;
     private TextView interpretationView;
+    private ImageView stack;
 
 
     @Override
@@ -61,15 +61,15 @@ public class GameActivity extends Activity {
         interpretationView = (TextView)findViewById(R.id.tv_interpetation);
 
         firstDeal = new ArrayList<>();
-        final ImageView card = (ImageView) findViewById(R.id.iv_stack);
-        card.getLayoutParams().width = getWidth() / 10;
+        stack = (ImageView) findViewById(R.id.iv_stack);
+        stack.getLayoutParams().width = getWidth() / 10;
 
         utils = new Utils();
-        card.setOnTouchListener(new View.OnTouchListener() {
+        stack.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadow = new View.DragShadowBuilder(card);
+                View.DragShadowBuilder shadow = new View.DragShadowBuilder(stack);
                 v.startDrag(data, shadow, null, 0);
                 Log.v("Position TOUCH", "X: "+event.getX()+" Y: "+event.getY());
                 return true;
@@ -77,7 +77,7 @@ public class GameActivity extends Activity {
 
         });
 
-        card.setOnDragListener(new View.OnDragListener() {
+        stack.setOnDragListener(new View.OnDragListener() {
 
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -107,36 +107,19 @@ public class GameActivity extends Activity {
                         }else{
                             if(startPosition==24){
                                 choseCardId = getCardPosition(Variables.user.getCardPicked().name);
-                                Log.v("Choose card id", ""+choseCardId);
+                                Log.v("Choose stack id", "" + choseCardId);
                                 if(choseCardId>-1){
                                     View cardView = findViewById(choseCardId);
                                     ImageView im = (ImageView)cardView.findViewById(R.id.card);
-                                    im.setBackground(getResources().getDrawable(R.drawable.border));
+                                    Picasso.with(GameActivity.this).load(R.drawable.card_back).into(im);
+                                    leftedCards.add(getCardFromDeck(choseCardId));
                                     startPosition++;
                                 }else{
                                     Toast.makeText(GameActivity.this, "Promešajte ponovo.",Toast.LENGTH_SHORT).show();
                                 }
                             }else{
-                                if(startPosition>24 && startPosition<33){
-//                                    if(choseCardId >= 0){
-//                                        View cardView = findViewById(choseCardId);
-//                                        ImageView im = (ImageView)cardView.findViewById(R.id.card);
-//                                        leftedCards.add(getCardFromDeck(choseCardId));
-//                                        im.setBackgroundResource(0);
-//                                        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(im);
-//                                        choseCardId = -1;
-//                                        startPosition++;
-//                                    }else {
-//                                        Toast.makeText(GameActivity.this, "Označite kartu koju želite da pokrijete", Toast.LENGTH_SHORT).show();
-//                                    }
-                                }else{
-                                    if(startPosition==33) {
-                                        Variables.leftedCards = leftedCards;
-                                        card.setVisibility(View.GONE);
-                                        removeOtherCards(leftedCards);
-                                        isRemoved = true;
-                                    }
-                                }
+                                stack.setClickable(false);
+                                Toast.makeText(GameActivity.this, "Izaberite karte koje želite da pokrijete", Toast.LENGTH_LONG).show();
                             }
                         }
                         return (true);
@@ -285,21 +268,22 @@ public class GameActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     if(startPosition>24 && startPosition<33){
-                        //card.setBackground(getResources().getDrawable(R.drawable.border));
                         choseCardId = cardFace.id;
-
-                        //View cardView = findViewById(choseCardId);
-                        //ImageView im = (ImageView)cardView.findViewById(R.id.card);
                         leftedCards.add(getCardFromDeck(choseCardId));
-                        //im.setBackgroundResource(0);
                         Picasso.with(GameActivity.this).load(R.drawable.card_back).into(card);
                         choseCardId = -1;
                         startPosition++;
+                    } else {
+                        if (startPosition == 33) {
+                            Variables.leftedCards = leftedCards;
+                            stack.setVisibility(View.GONE);
+                            removeOtherCards(leftedCards);
+                            isRemoved = true;
+                        }
                     }
                 }
             });
             view.setId(cardFace.id);
-//            baseList.add(i);
             row.addView(view);
         }
     }

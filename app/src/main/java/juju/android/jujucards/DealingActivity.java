@@ -31,8 +31,6 @@ public class DealingActivity extends Activity {
 
     private Random random;
     private ImageView cardView;
-    private ObjectAnimator animation1;
-    private ObjectAnimator animation2;
     Handler handler;
     Runnable runnable;
     @Override

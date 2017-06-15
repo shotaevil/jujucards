@@ -9,7 +9,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +42,21 @@ public class ChoosingCardActivity extends Activity {
             final ImageView cardView = (ImageView) card.findViewById(R.id.card);
             final TextView cardDesc = (TextView) card.findViewById(R.id.tv_card_desc);
 
-            cardView.getLayoutParams().width = getWidth() / 4;
+            if (getRotation(ChoosingCardActivity.this).contains("portrait")) {
+                cardView.getLayoutParams().width = getWidth() / 4;
+                if (i < 3) {
+                    firstRow.addView(card);
+                }
+                if (i > 2 && i < 6) {
+                    secondRow.addView(card);
+                }
+                if (i > 5) {
+                    thirdRow.addView(card);
+                }
+            } else {
+                cardView.getLayoutParams().width = getWidth() / 8;
+                firstRow.addView(card);
+            }
 
             cardDesc.setVisibility(View.VISIBLE);
             card.setId(basicCards.get(i).id);
@@ -54,15 +70,6 @@ public class ChoosingCardActivity extends Activity {
                     startActivity(i);
                 }
             });
-            if (i < 3) {
-                firstRow.addView(card);
-            }
-            if (i > 2 && i < 6) {
-                secondRow.addView(card);
-            }
-            if (i > 5) {
-                thirdRow.addView(card);
-            }
         }
     }
 
@@ -78,6 +85,20 @@ public class ChoosingCardActivity extends Activity {
             }
         }
         return results;
+    }
+
+    public String getRotation(Context context) {
+        final int rotation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                return "portrait";
+            case Surface.ROTATION_90:
+                return "landscape";
+            case Surface.ROTATION_180:
+                return "reverse portrait";
+            default:
+                return "reverse landscape";
+        }
     }
 
     public int getWidth() {
