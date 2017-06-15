@@ -131,6 +131,7 @@ public class SecondDealActivity extends Activity {
             Card temp;
             if (pos == 4) {
                 temp = cards.get(0);
+                cards.remove(temp);
             } else {
                 temp = getRandomCard();
             }
@@ -217,6 +218,8 @@ public class SecondDealActivity extends Activity {
             int next = r.nextInt(remain);
             result = cards.get(next);
             cards.remove(next);
+        } else {
+            result = cards.get(0);
         }
         return result;
     }
