@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
+    android:id="@+id/main_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/wood_background">
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/ll_card_deck"
         android:orientation="vertical"
@@ -43,33 +43,6 @@
                     android:orientation="horizontal"></LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-        <ScrollView
-            android:scrollbars="none"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/tv_interpetation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="0.7"/>
-                <Button
-                    android:id="@+id/bt_mix_again"
-                    android:layout_weight="0.3"
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Promešaj ponovo"
-                    android:onClick="MixAgain"/>
-            </LinearLayout>
-
-
-        </ScrollView>
 
     </LinearLayout>
     <LinearLayout

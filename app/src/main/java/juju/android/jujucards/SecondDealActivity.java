@@ -28,7 +28,7 @@ import java.util.Random;
  * Created by tzimonjic on 5/30/17.
  */
 
-public class SecondDealActivity extends Activity {
+public class SecondDealActivity extends BaseActivity {
 
     private ArrayList<Card> cards;
     private ImageView stack;
@@ -45,6 +45,7 @@ public class SecondDealActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_second_deal_activity);
+        //setBackground();
 
         cards = Variables.leftedCards;
         topLayout = (LinearLayout) findViewById(R.id.ll_top);
@@ -141,33 +142,29 @@ public class SecondDealActivity extends Activity {
                 } else {
                     if (cardThrown == 10) {
                         thirdCard = (ImageView) v.findViewById(R.id.third_card);
-                        thirdCard.getLayoutParams().width = getWidth() / 10;
-                        thirdCard.setVisibility(View.VISIBLE);
-                        addRandomCard(pos);
-                        Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(thirdCard);
-                    } else {
                         forthCard = (ImageView) v.findViewById(R.id.forth_card);
+                        thirdCard.getLayoutParams().width = getWidth() / 10;
                         forthCard.getLayoutParams().width = getWidth() / 10;
+                        thirdCard.setVisibility(View.VISIBLE);
                         forthCard.setVisibility(View.VISIBLE);
                         addRandomCard(pos);
+                        addRandomCard(pos);
+                        Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(thirdCard);
                         Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(forthCard);
                         stack.setVisibility(View.GONE);
                     }
                 }
             } else {
-                if (cardThrown < 11) {
-                    secondCard = (ImageView) v.findViewById(R.id.third_card);
-                    secondCard.getLayoutParams().width = getWidth() / 10;
-                    secondCard.setVisibility(View.VISIBLE);
-                    addRandomCard(pos);
-                    Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(secondCard);
-                } else {
-                    thirdCard = (ImageView) v.findViewById(R.id.forth_card);
-                    thirdCard.getLayoutParams().width = getWidth() / 10;
-                    thirdCard.setVisibility(View.VISIBLE);
-                    addRandomCard(pos);
-                    Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(thirdCard);
-                }
+                secondCard = (ImageView) v.findViewById(R.id.third_card);
+                thirdCard = (ImageView) v.findViewById(R.id.forth_card);
+                secondCard.getLayoutParams().width = getWidth() / 10;
+                thirdCard.getLayoutParams().width = getWidth() / 10;
+                secondCard.setVisibility(View.VISIBLE);
+                thirdCard.setVisibility(View.VISIBLE);
+                addRandomCard(pos);
+                addRandomCard(pos);
+                Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(secondCard);
+                Picasso.with(SecondDealActivity.this).load(R.drawable.card_back).into(thirdCard);
             }
         }
         position.remove(0);
@@ -281,12 +278,5 @@ public class SecondDealActivity extends Activity {
                 }
             });
         }
-    }
-
-    public int getWidth() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.x;
     }
 }

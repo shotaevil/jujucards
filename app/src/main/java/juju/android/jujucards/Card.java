@@ -11,9 +11,14 @@ import java.util.Arrays;
 public class Card {
     public int id;
     public String name;
-    public String desc;
-    public int imageId;
-    public int parentViewId;
+    String desc;
+    int imageId;
+    int parentViewId;
+    boolean isFlipped = false;
+
+    public Card(){
+
+    }
 
     public Card(String name, int imageId, String desc) {
         this.name = name;
@@ -21,19 +26,24 @@ public class Card {
         this.desc = desc;
     }
 
-    public Card(int id, int cardImage, String cardName, String cardDesc, int parentViewId) {
+    private Card(int id, int cardImage, String cardName, String cardDesc, int parentViewId) {
         this.id = id;
         this.name = cardName;
         this.imageId = cardImage;
         this.desc = cardDesc;
         this.parentViewId = parentViewId;
+        this.isFlipped = false;
     }
 
-    public Card() {
-
+    public boolean isFlipped() {
+        return isFlipped;
     }
 
-    public ArrayList<Card> initializeCards(Context ctx){
+    public void setFlipped(boolean flipped) {
+        isFlipped = flipped;
+    }
+
+    ArrayList<Card> initializeCards(Context ctx){
         ArrayList<Card> results = new ArrayList<>();
         ArrayList<Integer> cardImages = new ArrayList<>(Arrays.asList(R.drawable.kec_herc, R.drawable.sedam_herc, R.drawable.osam_herc, R.drawable.devet_herc, R.drawable.deset_herc, R.drawable.zandar_herc, R.drawable.dama_herc, R.drawable.kralj_herc,
                 R.drawable.kec_pik, R.drawable.sedam_pik, R.drawable.osam_pik, R.drawable.devet_pik, R.drawable.deset_pik, R.drawable.zandar_pik, R.drawable.dama_pik, R.drawable.kralj_pik,
@@ -66,5 +76,20 @@ public class Card {
                 ", name='" + name + '\'' +
                 ", imageId=" + imageId +
                 '}';
+    }
+
+    public ArrayList<Card> getBasicCards(Context ctx) {
+        ArrayList<Card> results = new ArrayList<>();
+        ArrayList<Card> cards = initializeCards(ctx);
+        for (Card card :
+                cards) {
+            if (card.name.contains("zandar_pik") || card.name.contains("zandar_karo") ||
+                    card.name.contains("dama_pik") || card.name.contains("dama_karo") ||
+                    card.name.contains("dama_pik") || card.name.contains("dama_herc") ||
+                    card.name.contains("sedam_pik") || card.name.contains("kralj_tref")) {
+                results.add(card);
+            }
+        }
+        return results;
     }
 }

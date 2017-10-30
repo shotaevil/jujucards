@@ -3,13 +3,16 @@ package juju.android.jujucards;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     private RadioGroup gender;
     private RadioButton femaleBt;
@@ -19,6 +22,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_screen);
+        //setBackground();
 
 //         gender = (RadioGroup) findViewById(R.id.rg_gender);
 //         femaleBt = (RadioButton)findViewById(R.id.female);
@@ -62,7 +66,7 @@ public class MainActivity extends Activity {
         //user.setCard()
         Variables.user = user;
         Log.v("User", user.toString());
-        Intent i = new Intent(MainActivity.this, ChoosingCardActivity.class);
+        Intent i = new Intent(MainActivity.this, ChoosingCardActivity_.class);
         startActivity(i);
     }
 

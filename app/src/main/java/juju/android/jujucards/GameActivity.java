@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +34,7 @@ import java.util.Random;
  * Created by tzimonjic on 4/22/17.
  */
 
-public class GameActivity extends Activity {
+public class GameActivity extends BaseActivity {
     int startPosition = 0;
     int remain = 32;
     int choseCardId = -1;
@@ -46,12 +48,15 @@ public class GameActivity extends Activity {
     private Utils utils;
     private TextView interpretationView;
     private ImageView stack;
+    private Button continueButton;
+    private ImageView fakeStack;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
+        //setBackground();
 
         cards = new Card().initializeCards(GameActivity.this);
 
@@ -59,10 +64,14 @@ public class GameActivity extends Activity {
         secondRow = (LinearLayout)findViewById(R.id.ll_second_row);
         thirdRow = (LinearLayout)findViewById(R.id.ll_third_row);
         interpretationView = (TextView)findViewById(R.id.tv_interpetation);
+        continueButton = (Button) findViewById(R.id.bt_continue);
 
         firstDeal = new ArrayList<>();
         stack = (ImageView) findViewById(R.id.iv_stack);
         stack.getLayoutParams().width = getWidth() / 10;
+        fakeStack = (ImageView) findViewById(R.id.iv_fake_stack);
+        fakeStack.getLayoutParams().width = getWidth() / 10;
+        fakeStack.setAlpha(0.5f);
 
         utils = new Utils();
         stack.setOnTouchListener(new View.OnTouchListener() {
@@ -149,6 +158,7 @@ public class GameActivity extends Activity {
         }
         return null;
     }
+
     private void setNewContentView(final ArrayList<Card> leftedCards) {
         firstRow.removeAllViews();
         secondRow.removeAllViews();
@@ -205,8 +215,16 @@ public class GameActivity extends Activity {
                         interpretationView.setText(interpretation[0]);
                         firstCard.setClickable(false);
                         if (pairedClicked[0] == 7) {
-                            Button mixAgainBt = (Button) findViewById(R.id.bt_mix_again);
-                            mixAgainBt.setVisibility(View.VISIBLE);
+//                            Button mixAgainBt = (Button) findViewById(R.id.bt_mix_again);
+//                            mixAgainBt.setVisibility(View.VISIBLE);
+                            continueButton.setText("PROMEŠAJ PONOVO");
+                            continueButton.setVisibility(View.VISIBLE);
+                            continueButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MixAgain(v);
+                                }
+                            });
                         }
                         pairedClicked[0]++;
                     }
@@ -224,6 +242,7 @@ public class GameActivity extends Activity {
         for (Card card :
                 firstDeal) {
             final View v = findViewById(card.id);
+
             v.animate()
                     .translationY(v.getHeight())
                     .alpha(0.0f)
@@ -267,18 +286,38 @@ public class GameActivity extends Activity {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onClick(View v) {
-                    if(startPosition>24 && startPosition<33){
-                        choseCardId = cardFace.id;
-                        leftedCards.add(getCardFromDeck(choseCardId));
-                        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(card);
-                        choseCardId = -1;
-                        startPosition++;
-                    } else {
-                        if (startPosition == 33) {
-                            Variables.leftedCards = leftedCards;
+                    if(startPosition>24){
+                        if (startPosition == 32) {
+                            // mozda dodati dugme DALJE -> pa da se sklone ostali
+                            continueButton.setVisibility(View.VISIBLE);
                             stack.setVisibility(View.GONE);
-                            removeOtherCards(leftedCards);
-                            isRemoved = true;
+                            fakeStack.setVisibility(View.GONE);
+                            continueButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Variables.leftedCards = leftedCards;
+                                    removeOtherCards(leftedCards);
+                                    isRemoved = true;
+                                    continueButton.setVisibility(View.GONE);
+                                }
+                            });
+                        }else{
+                            continueButton.setVisibility(View.GONE);
+                            if(cardFace.isFlipped){
+                                leftedCards.remove(getCardFromDeck(cardFace.id));
+                                Picasso.with(GameActivity.this).load(cardFace.imageId).into(card);
+                                Animation animBounce = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+                                stack.startAnimation(animBounce);
+                                startPosition--;
+                            }else{
+                                leftedCards.add(getCardFromDeck(cardFace.id));
+                                Picasso.with(GameActivity.this).load(R.drawable.card_back).into(card);
+                                Animation animBounce = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+                                stack.startAnimation(animBounce);
+                                choseCardId = -1;
+                                startPosition++;
+                            }
+                            cardFace.isFlipped = !cardFace.isFlipped;
                         }
                     }
                 }

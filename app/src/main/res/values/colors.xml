@@ -4,8 +4,13 @@
     <color name="colorPrimaryDark">#d7f2e9</color>
     <color name="colorAccent">#FF4081</color>
     <color name="grey">#EAEAEA</color>
-    <color name="green">#1a6d53</color>
-    <color name="beige">#DDC4AE</color>
+    <color name="green">#445533</color>
+    <color name="beige">#E6E5E4</color>
     <color name="light_green">#d7f2e9</color>
+    <color name="purple">#907B8A</color>
+    <color name="brown">#CCAA55</color>
+    <color name="red">#C03834</color>
+    <color name="pink">#E2D8C5</color>
+    <color name="reboot">#FFEEBB</color>
 
 </resources>

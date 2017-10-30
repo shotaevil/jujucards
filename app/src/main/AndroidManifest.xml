@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ChoosingCardActivity"
+            android:name=".ChoosingCardActivity_"
             android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".DealingActivity" android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".GameActivity" android:screenOrientation="landscape" android:configChanges="orientation|keyboardHidden" />

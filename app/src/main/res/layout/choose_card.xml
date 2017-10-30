@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wood_background"
+    android:id="@+id/main_view"
     android:padding="10dp">
 
     <LinearLayout
@@ -13,45 +13,17 @@
         android:layout_marginTop="5dp">
 
         <TextView
-            android:id="@+id/tv_name_label"
+            android:id="@+id/nameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="@string/choose_card" />
 
     </LinearLayout>
-
-
-    <ScrollView
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        />
 
-        <LinearLayout
-            android:id="@+id/ll_cards"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/ll_first_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal" />
-
-            <LinearLayout
-                android:id="@+id/ll_second_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal" />
-
-            <LinearLayout
-                android:id="@+id/ll_third_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal" />
-        </LinearLayout>
-    </ScrollView>
 </LinearLayout>

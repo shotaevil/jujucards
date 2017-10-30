@@ -1,21 +1,34 @@
 package juju.android.jujucards;
 
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,198 +39,142 @@ import java.util.Random;
  * Created by tzimonjic on 5/11/17.
  */
 
-public class DealingActivity extends Activity {
+public class DealingActivity extends BaseActivity {
 
 
-    private Random random;
     private ImageView cardView;
-    Handler handler;
-    Runnable runnable;
+    boolean isRunning = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //setBackground();
+        final RelativeLayout layout = (RelativeLayout) findViewById(R.id.rl_card);
+        int i = 0;
+        final Random rand = new Random();
+        final Animation animBounce = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_down);
 
-        final LinearLayout layout = (LinearLayout) findViewById(R.id.ll_card);
-        LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View firstCard = mainInflater.inflate(R.layout.card, null);
-        LinearLayout linearLayout = (LinearLayout) firstCard.findViewById(R.id.ll_card_layout);
-        cardView = (ImageView) firstCard.findViewById(R.id.card);
-        Picasso.with(DealingActivity.this).load(R.drawable.card_back).into(cardView);
-        cardView.getLayoutParams().width = getHeight() / 10;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
-        linearLayout.setLayoutParams(params);
-        random = new Random();
+        while (i < 32) {
+            LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View firstCard = mainInflater.inflate(R.layout.card, null);
+            firstCard.setId(i);
+            cardView = (ImageView) firstCard.findViewById(R.id.card);
+            cardView.setAnimation(animBounce);
+            Picasso.with(DealingActivity.this).load(R.drawable.card_back).into(cardView);
+            if (getRotation(DealingActivity.this).contains("portrait")) {
+                cardView.getLayoutParams().width = getWidth() / 4;
+            } else {
+                cardView.getLayoutParams().width = (int) (getHeight() / 6);
+            }
+            layout.addView(firstCard);
+            i++;
+        }
 
-        layout.addView(firstCard);
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //createAnimation(cardView);
-                //rotateAnimation(cardView);
-                //TrailingAnimation(cardView);
-                mixCards(v);
             }
         });
-    }
 
-    private void mixCards(final View v){
-        ArrayList<Card> cards = new Card().initializeCards(DealingActivity.this);
-        final int[] xPosition = {0};
-        final int[] yPosition = {0};
-        final int i = 10;
-        final int intervalTime = 500; // 10 sec
-        handler = new Handler();
-        handler.postDelayed(new Runnable()  {
+        final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                if(xPosition[0]>=getWidth()){
-                    xPosition[0] = xPosition[0]-i;
-                }else{
-                    xPosition[0] = xPosition[0] + i;
+                Random rand = new Random();
+                while (true) {
+                    Log.e("TAG", "thread");
+                    final View v = findViewById(rand.nextInt(32));
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                    params.setMargins(rand.nextInt(getHeight()), rand.nextInt(getWidth()), 0, 0);
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+
+                    }
+                    v.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isRunning) {
+                                v.requestLayout(); //has to be called in UI thread
+                            }
+                        }
+                    });
                 }
-                if(yPosition[0]>=getHeight()){
-                    yPosition[0] = yPosition[0]-i;
-                }else{
-                    yPosition[0] = yPosition[0] + i;
-                }
-                translate(v, xPosition[0], yPosition[0]);
-                runnable = this;
-                handler.postDelayed(runnable, intervalTime);
-
-            }
-        }, intervalTime);
-        super.onStart();
-    }
-
-    @Override
-    protected void onPause() {
-        handler.removeCallbacks(runnable); //stop handler when activity not visible
-        super.onPause();
-    }
-
-    private void translate(final View v, final int xPosition, final int yPosition){
-        final TranslateAnimation anim = new TranslateAnimation( v.getX(), xPosition, v.getY(), yPosition);
-        anim.setDuration(100);
-        //anim.setRepeatCount(Animation.INFINITE);
-        anim.setFillAfter( true );
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                v.setX(xPosition);
-                v.setY(yPosition);
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
             }
         });
-        v.startAnimation(anim);
-    }
-    /*
-    *   xPosition[0] = xPosition[0] + i[0];
-                yPosition[0] = yPosition[0]+ i[0];
-                final TranslateAnimation anim = new TranslateAnimation( v.getX(),v.getX()+ i[0],v.getY(), v.getY()+ i[0]);
-                anim.setDuration(100);
-                //anim.setRepeatCount(Animation.INFINITE);
-                anim.setFillAfter( true );
-                anim.setAnimationListener(new Animation.AnimationListener() {
+
+        thread.start();
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRunning = false;
+                layout.setVisibility(View.GONE);
+                final RelativeLayout secondLayout = (RelativeLayout) findViewById(R.id.rl_secondcard);
+
+                LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View firstCard = mainInflater.inflate(R.layout.card, null);
+                cardView = (ImageView) firstCard.findViewById(R.id.card);
+                Picasso.with(DealingActivity.this).load(R.drawable.card_back).into(cardView);
+                if (getRotation(DealingActivity.this).contains("portrait")) {
+                    cardView.getLayoutParams().width = getWidth() / 4;
+                } else {
+                    cardView.getLayoutParams().width = (int) (getHeight() / 6);
+                }
+               secondLayout.addView(firstCard);
+                cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        i[0]++;
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
+                    public void onClick(View v) {
+                        ArrayList<Card> cards = new Card().initializeCards(DealingActivity.this);
+                        Card randomCard = cards.get(rand.nextInt(cards.size() - 1));
+                        if (getRotation(DealingActivity.this).contains("portrait")) {
+                            cardView.getLayoutParams().width = getWidth() / 4;
+                        } else {
+                            cardView.getLayoutParams().width = (int) (getHeight() / 6);
+                        }
+                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardView.getLayoutParams();
+                        Picasso.with(DealingActivity.this).load(randomCard.imageId).into(cardView);
+                        Button continueBt = (Button) findViewById(R.id.bt_continue);
+                        continueBt.setVisibility(View.VISIBLE);
+                        continueBt.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                DealingActivity.this.finish();
+                                Intent i = new Intent(DealingActivity.this, GameActivity.class);
+                                startActivity(i);
+                            }
+                        });
                     }
                 });
-                v.startAnimation(anim);
-    * */
-
-
-    private void createAnimation(final View v, final int i) {
-        final TranslateAnimation anim = new TranslateAnimation( v.getX(),v.getX()+i ,v.getY(), v.getY()+i );
-        anim.setDuration(100);
-        //anim.setRepeatCount(Animation.INFINITE);
-        anim.setFillAfter( true );
-        v.startAnimation(anim);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                v.setX(v.getX()+i);
-                v.setY(v.getY()+i);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
 
             }
         });
+
+//        final Animation animBounce = AnimationUtils.loadAnimation(getApplicationContext(),
+//                R.anim.together);
+//        animBounce.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                if (animation == animBounce) {
+//                    Toast.makeText(getApplicationContext(), "Animation Stopped",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
+//       // cardView.startAnimation(animBounce);
     }
 
-    private void rotateAnimation(View v){
-        ObjectAnimator rotation = ObjectAnimator.ofFloat(v, "rotation", 360).setDuration(2000);
-        rotation.setRepeatCount(Animation.INFINITE);
-        rotation.start();
-    }
-    private void moveViewToScreenCenter( View view )
-    {
-        LinearLayout root = (LinearLayout) findViewById( R.id.root_layout );
-        DisplayMetrics dm = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics( dm );
-        //int statusBarOffset = dm.heightPixels - root.getMeasuredHeight();
-
-        int originalPos[] = new int[2];
-        view.getLocationOnScreen( originalPos );
-
-        int xDest = dm.widthPixels/2;
-        xDest -= (view.getMeasuredWidth()/2);
-        int yDest = dm.heightPixels/2 - (view.getMeasuredHeight()/2);
-
-        TranslateAnimation anim = new TranslateAnimation( 0, xDest - originalPos[0] , 0, yDest - originalPos[1] );
-        anim.setDuration(1000);
-        anim.setFillAfter( true );
-        view.startAnimation(anim);
-    }
-
-    public int getWidth() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.x;
-    }
-
-    public int getHeight() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.y;
-    }
-
-
-    public int getRandomX() {
-        return random.nextInt(getWidth());
-    }
-
-    public int getRandomY(){
-        return random.nextInt(getHeight());
-    }
 }
