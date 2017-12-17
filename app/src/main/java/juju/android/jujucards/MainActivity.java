@@ -1,22 +1,12 @@
 package juju.android.jujucards;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 
 public class MainActivity extends BaseActivity {
-
-    private RadioGroup gender;
-    private RadioButton femaleBt;
-    private RadioButton maleBt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

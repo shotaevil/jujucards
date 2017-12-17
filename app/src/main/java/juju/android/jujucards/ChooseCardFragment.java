@@ -41,7 +41,6 @@ public class ChooseCardFragment extends Fragment {
 
     private OnCardClickedListener listener;
 
-
     @AfterViews
     public void afterViews() {
         final ArrayList<Card> basicCards = new Card().getBasicCards(getActivity());

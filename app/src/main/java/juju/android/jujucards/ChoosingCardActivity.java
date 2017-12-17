@@ -1,6 +1,10 @@
 package juju.android.jujucards;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import org.androidannotations.annotations.AfterViews;
@@ -19,12 +23,31 @@ public class ChoosingCardActivity extends BaseActivity implements ChooseCardFrag
     @AfterViews
     public void afterViews(){
         setBackground();
+        setHeader();
         displayChooseCardFragment();
     }
 
     private void displayChooseCardFragment() {
         ChooseCardFragment chooseCardFragment = ChooseCardFragment_.builder().screenWidth(getWidth()).build();
         this.displayFragment(chooseCardFragment, R.id.fragmentContainer);
+    }
+
+    public void setHeader(){
+        ImageView helpButton = findViewById(R.id.help_bt);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHelpDialog();
+            }
+        });
+    }
+
+    private void showHelpDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ConfirmationDialogFragment confirmationDialogFragment = ConfirmationDialogFragment.newInstance("JuJu", getString(R.string.choose_card_instruction));
+        confirmationDialogFragment.show(fragmentManager, "dialog");
     }
 
     public void setBackground(){

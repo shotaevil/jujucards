@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="dialog_background">@color/blue</color>
+    <color name="dialog_text">@android:color/white</color>
+    <color name="dialog_line_background">@android:color/white</color>
     <color name="colorPrimary">#1a6d53</color>
     <color name="colorPrimaryDark">#d7f2e9</color>
     <color name="colorAccent">#FF4081</color>
@@ -12,5 +15,6 @@
     <color name="red">#C03834</color>
     <color name="pink">#E2D8C5</color>
     <color name="reboot">#FFEEBB</color>
+    <color name="blue">#1259B7</color>
 
 </resources>

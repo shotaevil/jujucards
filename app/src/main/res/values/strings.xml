@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JujuCards</string>
+    <string name="app_name">JuJu Karte</string>
     <string name="hello_world">Hello world!</string>
     <string name="kec_herc">kuća (ili promena stanja u kući)</string>
     <string name="sedam_herc">mlada (udata) žena</string>
@@ -34,10 +34,26 @@
     <string name="dama_tref">nesreća (nešto negativno)</string>
     <string name="kralj_tref">stariji gospodin</string>
     <string name="choose_card">Odaberite odgovarajuću kartu:</string>
-
+    <string name="choose_card_instruction">Od ponuđenih karata odaberite vaš status ili status osobe kojoj želite da gledate karte</string>
+    <string name="card_not_shown_message">Vaša statusna karta nije izašla</string>
+    <string name="mix_again">Promešaj ponovo></string>
+    <string name="cancel_bt">Odustani</string>
+    <string name="cover_instruction">Prekrijte 8 karata koje su sfere Vašeg interesovanja</string>
+    <string name="next">Dalje</string>
+    <string name="first_part_title">Trenutna situacija</string>
+    <string name="first_part_explanation">Prikazana tumačenja predstavljaju stvari i događaje kojima ste trenutno okruženi</string>
+    <string name="second_part_title">Bliska budućnost</string>
+    <string name="second_part_explanation">Prikazana tumačenja predstavljaju stvari i događaje koje Vas očekuju u bliskoj budućnosti</string>
+    <string name="middle_card_explanation">Osobu %1s podstiče %2s uz podršku %3s i %4s</string>
+    <string name="left_card_explanaion">Ono što vas očekuje…</string>
+    <string name="right_card_explanation">Ono što Vam se trenutno dešava…</string>
+    <string name="up_card_explanation">Ono o čemu razmišljate…</string>
+    <string name="down_card_explanation">Ono što vas očekuje…</string>
+    <string name="contact_juju_team">Za dodatne informacije i pitanja kontaktirajte naš Juju tim</string>
+    <string name="ok">U redu</string>
     <string-array name="age_rang">
         <item>manje od 35</item>
-        <item>35-60</item>
+        <item>35–60</item>
         <item>više od 60</item>
     </string-array>
     <string-array name="relationship_status">

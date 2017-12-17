@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -14,4 +14,31 @@
         <item name="max_visible">4</item>
     </style>
 
+    <style name="ConfirmationDialog">
+        <item name="android:background">@color/dialog_background</item>
+        <item name="android:textColor">@color/dialog_text</item>
+    </style>
+
+    <style name="ConfirmationDialog.Line">
+        <item name="android:background">@color/dialog_line_background</item>
+    </style>
+
+    <style name="ConfirmationDialog.Title" parent="ConfirmationDialog">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="ConfirmationDialog.Description" parent="ConfirmationDialog">
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_marginTop">10sp</item>
+        <item name="android:layout_marginBottom">10sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ConfirmationDialog.Button" parent="ConfirmationDialog">
+        <item name="android:textColor">@color/dialog_background</item>
+        <item name="android:background">@color/dialog_text</item>
+        <item name="android:padding">2dp</item>
+    </style>
 </resources>
