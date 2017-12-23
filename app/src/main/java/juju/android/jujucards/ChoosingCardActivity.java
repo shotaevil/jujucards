@@ -1,8 +1,12 @@
 package juju.android.jujucards;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +26,24 @@ public class ChoosingCardActivity extends BaseActivity implements ChooseCardFrag
 
     @AfterViews
     public void afterViews(){
-        setBackground();
-        setHeader();
+        setBackground(getString(R.string.app_name), true,  main_view);
         displayChooseCardFragment();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.help:
+                showHelpDialog(getString(R.string.juju_short), getString(R.string.choose_card_instruction));
+                return true;
+        }
+        return (super.onOptionsItemSelected(item));
     }
 
     private void displayChooseCardFragment() {
@@ -32,30 +51,13 @@ public class ChoosingCardActivity extends BaseActivity implements ChooseCardFrag
         this.displayFragment(chooseCardFragment, R.id.fragmentContainer);
     }
 
-    public void setHeader(){
-        ImageView helpButton = findViewById(R.id.help_bt);
-        helpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showHelpDialog();
-            }
-        });
-    }
-
-    private void showHelpDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ConfirmationDialogFragment confirmationDialogFragment = ConfirmationDialogFragment.newInstance("JuJu", getString(R.string.choose_card_instruction));
-        confirmationDialogFragment.show(fragmentManager, "dialog");
-    }
-
-    public void setBackground(){
-        main_view.setBackground(getResources().getDrawable(R.drawable.beige_background));
-    }
 
     @Override
     public void onCardClickedListener(Card card) {
+        startDealingActivity(card);
+    }
+
+    private void startDealingActivity(Card card) {
         Intent i = new Intent(this, DealingActivity.class).putExtra("CARD_ID", card.id);
         startActivity(i);
     }

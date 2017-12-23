@@ -5,60 +5,48 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.ViewsById;
+
+@EActivity(R.layout.start_screen)
 public class MainActivity extends BaseActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.start_screen);
-        //setBackground();
+    @ViewById
+    LinearLayout main_view;
 
-//         gender = (RadioGroup) findViewById(R.id.rg_gender);
-//         femaleBt = (RadioButton)findViewById(R.id.female);
-//         maleBt = (RadioButton)findViewById(R.id.male);
-//
-//        femaleBt.setChecked(true);
+    @ViewById
+    EditText et_name;
 
+    @ViewById
+    EditText et_dateOfBirth;
+
+    @AfterViews
+    public void afterViews(){
+        setBackground(getString(R.string.app_name), false,  main_view);
     }
-
 
     public void Submit(View v){
-//        Spinner sp_age = (Spinner)findViewById(R.id.sp_age);
-//        Spinner sp_relationship_status = (Spinner) findViewById(R.id.sp_relationship);
-//       String sex = null;
-//        if (femaleBt.isChecked()){
-//            sex = "female";
-//        }else{
-//            sex = "male";
-//        }
-
-//        switch (gender.getCheckedRadioButtonId()){
-//            case 2: {
-//                sex = "female";
-//                break;
-//            }
-//            case 1: {
-//                sex = "male";
-//                break;
-//            }
-//        }
-//        User user = new User();
-//        user.setName(et_name.getText().toString());
-//        user.setGender(sex);
-//        user.setAge(sp_age.getSelectedItem().toString());
-//        user.setRelationshipStatus(sp_relationship_status.getSelectedItem().toString());
-
-        EditText et_name = (EditText) findViewById(R.id.et_name);
-        EditText et_dateOfBirth = (EditText) findViewById(R.id.dateOfBirth);
-        User user = new User();
-        user.setName(et_name.toString());
-        //user.setCard()
-        Variables.user = user;
-        Log.v("User", user.toString());
-        Intent i = new Intent(MainActivity.this, ChoosingCardActivity_.class);
-        startActivity(i);
+        String name = et_name.getText().toString();
+        String age = et_dateOfBirth.getText().toString();
+        setUpUserParams(name, age);
+        startChooseCardActivity();
     }
 
+    private void setUpUserParams(String name, String age) {
+        User user = new User();
+        user.setName(name);
+        user.setAge(age);
+        Variables.user = user;
+        Log.v("User", user.toString());
+    }
+
+    private void startChooseCardActivity() {
+        Intent i = new Intent(this, ChoosingCardActivity_.class);
+        startActivity(i);
+    }
 
 }

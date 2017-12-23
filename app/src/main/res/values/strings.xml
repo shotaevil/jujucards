@@ -51,6 +51,8 @@
     <string name="down_card_explanation">Ono što vas očekuje…</string>
     <string name="contact_juju_team">Za dodatne informacije i pitanja kontaktirajte naš Juju tim</string>
     <string name="ok">U redu</string>
+    <string name="help">Pomoć</string>
+    <string name="juju_short">JuJu</string>
     <string-array name="age_rang">
         <item>manje od 35</item>
         <item>35–60</item>

@@ -12,14 +12,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import org.androidannotations.annotations.EBean;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Milos on 7/16/2017.
@@ -31,7 +34,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     public String getRotation(Context context) {
         final int rotation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
@@ -84,6 +86,26 @@ public class BaseActivity extends AppCompatActivity {
     protected void popFragmentInclusive(String fragmentTag) {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.popBackStackImmediate(fragmentTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    public void setBackground(@NotNull String title, boolean isHomeUpEnabled, LinearLayout mainLayout){
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(title);
+            if(isHomeUpEnabled) {
+                supportActionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        }
+        mainLayout.setBackground(getResources().getDrawable(R.drawable.beige_background));
+    }
+
+    public void showHelpDialog(String title, String message) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ConfirmationDialogFragment confirmationDialogFragment = ConfirmationDialogFragment.newInstance(title, message);
+        confirmationDialogFragment.show(fragmentManager, "dialog");
+        transaction.commit();
     }
 
 }
