@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
@@ -49,11 +50,16 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
     public int getWidth() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Log.v("Screen width", "" + size.x);
         return size.x;
     }
 
@@ -88,7 +94,7 @@ public class BaseActivity extends AppCompatActivity {
         supportFragmentManager.popBackStackImmediate(fragmentTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    public void setBackground(@NotNull String title, boolean isHomeUpEnabled, LinearLayout mainLayout){
+    public void setBackground(@NotNull String title, boolean isHomeUpEnabled, View mainLayout){
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setTitle(title);

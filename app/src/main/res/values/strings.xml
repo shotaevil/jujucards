@@ -35,8 +35,7 @@
     <string name="kralj_tref">stariji gospodin</string>
     <string name="choose_card">Odaberite odgovarajuću kartu:</string>
     <string name="choose_card_instruction">Od ponuđenih karata odaberite vaš status ili status osobe kojoj želite da gledate karte</string>
-    <string name="card_not_shown_message">Vaša statusna karta nije izašla</string>
-    <string name="mix_again">Promešaj ponovo></string>
+    <string name="card_not_shown_message">Vaša statusna karta nije izašla. Promešajte ponovo karte povratkom na prethodni ekran.</string>
     <string name="cancel_bt">Odustani</string>
     <string name="cover_instruction">Prekrijte 8 karata koje su sfere Vašeg interesovanja</string>
     <string name="next">Dalje</string>
@@ -53,6 +52,10 @@
     <string name="ok">U redu</string>
     <string name="help">Pomoć</string>
     <string name="juju_short">JuJu</string>
+    <string name="mix_card_instructions">Dok se karte mešaju pomislite želju potom kliknite na ekran da zaustavite mešanje.</string>
+    <string name="choose_card_for_hiding">Izaberite karte koje želite da pokrijete.</string>
+    <string name="first_covered_card_message">Prva karta koja se pokriva je Vaša statusna karta. Nakon toga odaberite karte koje Vas zanimaju.</string>
+    <string name="juju_first_part_title">JuJu - prvi deo</string>
     <string-array name="age_rang">
         <item>manje od 35</item>
         <item>35–60</item>
