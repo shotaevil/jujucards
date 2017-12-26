@@ -41,11 +41,10 @@ public class GameActivity extends BaseActivity {
     private LinearLayout secondRow;
     private LinearLayout thirdRow;
     private Utils utils;
-    private TextView interpretationView;
     private ImageView stack;
-    private Button continueButton;
+    private Button gameActionButton;
     private ImageView fakeStack;
-
+    private ArrayList<CardPair> cardPairs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +59,7 @@ public class GameActivity extends BaseActivity {
         firstRow = findViewById(R.id.ll_first_row);
         secondRow = findViewById(R.id.ll_second_row);
         thirdRow = findViewById(R.id.ll_third_row);
-        interpretationView = findViewById(R.id.tv_interpetation);
-        continueButton = findViewById(R.id.bt_continue);
+        gameActionButton = findViewById(R.id.bt_continue);
 
         firstDeal = new ArrayList<>();
         stack = findViewById(R.id.iv_stack);
@@ -72,7 +70,7 @@ public class GameActivity extends BaseActivity {
             ClipData data = ClipData.newPlainText("", "");
             View.DragShadowBuilder shadow = new View.DragShadowBuilder(stack);
             v.startDrag(data, shadow, null, 0);
-            Log.v("Position TOUCH", "X: "+event.getX()+" Y: "+event.getY());
+            Log.v("Position TOUCH", "X: " + event.getX() + " Y: " + event.getY());
             return true;
         });
 
@@ -91,24 +89,24 @@ public class GameActivity extends BaseActivity {
                     return (true);
                 }
                 case DragEvent.ACTION_DRAG_ENDED: {
-                    if(startPosition<24){
+                    if (startPosition < 24) {
                         showCardOnTableByGivenPosition(firstDeal, startPosition);
                         startPosition++;
                     }
-                    if(startPosition==24){
+                    if (startPosition == 24) {
                         choseCardId = takeChosenCardId(Variables.user.getCardPicked().name);
                         Log.v("Choose stack id", "" + choseCardId);
                         //provera da li je karta izasla i moze da se nastavi igra
-                        if(choseCardId>-1){
+                        if (choseCardId > -1) {
                             showHelpDialog(getString(R.string.juju_short), getString(R.string.first_covered_card_message));
                             coverCardById(choseCardId);
                             addCoveredCard(takeCardFromDeck(choseCardId));
                             startPosition++;
-                        }else{
+                        } else {
                             showHelpDialog(getString(R.string.juju_short), getString(R.string.card_not_shown_message));
                         }
                     }
-                    if(startPosition>24){
+                    if (startPosition > 24) {
                         stack.setClickable(false);
                     }
                 }
@@ -125,8 +123,9 @@ public class GameActivity extends BaseActivity {
         coverPanelRowWithRandomCards(16, 24, thirdRow);
     }
 
+    //I deo - redjanje i pokrivanje
     private void coverPanelRowWithRandomCards(int from, int to, final LinearLayout row) {
-        for(int i=from; i<to; i++){
+        for (int i = from; i < to; i++) {
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View view = inflater.inflate(R.layout.card, null);
             final Card randomCard = getRandomCard();
@@ -134,20 +133,19 @@ public class GameActivity extends BaseActivity {
             final ImageView card = view.findViewById(R.id.card);
             changeCardViewParams(randomCard, card);
             card.setOnClickListener(v -> {
-                continueButton.setVisibility(View.VISIBLE);
+                gameActionButton.setVisibility(View.VISIBLE);
                 Card clickedCardFromDeck = takeCardFromDeck(randomCard.id);
                 //kraj prvog dela kada se preklope 8 karata
                 if (startPosition == 31) {
                     coverCard(card, clickedCardFromDeck);
                     hideCardStack();
-                    continueButton.setOnClickListener(v1 -> {
+                    gameActionButton.setOnClickListener(v1 -> {
                         removeOtherCards(coverCards);
                         Variables.leftedCards = coverCards;
-                        continueButton.setVisibility(View.GONE);
                     });
                 }
-                if(startPosition>24 && startPosition<32){
-                    continueButton.setVisibility(View.GONE);
+                if (startPosition > 24 && startPosition < 32) {
+                    gameActionButton.setVisibility(View.GONE);
                     if (randomCard.isFlipped) {
                         //slucaj da se korisnik predomisli pa vrati pokrivenu kartu nazad u stek
                         uncoverCard(randomCard, card, clickedCardFromDeck);
@@ -165,6 +163,54 @@ public class GameActivity extends BaseActivity {
         }
     }
 
+    //II deo - parovi; tumacenje
+    private void showCoveredCardsOnly(final ArrayList<Card> leftedCards) {
+        resetContentView();
+
+        int i = 0;
+        final int[] pairedClicked = {0};
+
+        for (final Card card : leftedCards) {
+            LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View firstCard = mainInflater.inflate(R.layout.card, null);
+            final View secondCard = mainInflater.inflate(R.layout.card, null);
+            final ImageView cardView = firstCard.findViewById(R.id.card);
+            final ImageView cardBackView = secondCard.findViewById(R.id.card);
+            int fade_in = R.anim.fade_in;
+
+            changeCardViewParams(cardView, cardBackView);
+            putCardViewToRow(i, firstCard, secondCard);
+
+            firstCard.setOnClickListener(v -> {
+                while (pairedClicked[0] <= 8) {
+                    if (pairedClicked[0] == 8) {
+                        showMixAgainButton();
+                        break;
+                    }
+                    Card cardOver = getRandomCard();
+                    Variables.leftedCards.add(cardOver);
+                    firstCard.setId(card.id);
+                    secondCard.setId(cardOver.id);
+
+                    changeCardViewAndShowAnimation(cardView, card.imageId, fade_in);
+                    changeCardViewAndShowAnimation(cardBackView, cardOver.imageId, fade_in);
+
+                    cardBackView.setVisibility(View.VISIBLE);
+
+                    cardPairs.add(new CardPair(card, cardOver));
+
+                    pairedClicked[0]++;
+                    break;
+                }
+                showCardPairInterpretation(cardPairs, firstCard.getId());
+            });
+
+            secondCard.setOnClickListener(view -> showCardPairInterpretation(cardPairs, secondCard.getId()));
+
+            i++;
+        }
+    }
+
     private void uncoverCard(Card randomCard, ImageView card, Card clickedCardFromDeck) {
         removeCoverCard(clickedCardFromDeck);
         int randomCardImageId = randomCard.imageId;
@@ -177,7 +223,7 @@ public class GameActivity extends BaseActivity {
         int card_back = R.drawable.card_back;
         int fade_out = R.anim.fade_out;
         changeCardViewAndShowAnimation(card, card_back, fade_out);
-       }
+    }
 
     private void coverCardById(int cardIdForHiding) {
         View cardView = findViewById(cardIdForHiding);
@@ -189,8 +235,8 @@ public class GameActivity extends BaseActivity {
         coverCards.remove(randomCard);
     }
 
-    private void changeCardViewAndShowAnimation(ImageView card, int cardImageId, int animation) {
-        Picasso.with(GameActivity.this).load(cardImageId).into(card);
+    private void changeCardViewAndShowAnimation(ImageView cardImage, int cardImageId, int animation) {
+        Picasso.with(GameActivity.this).load(cardImageId).into(cardImage);
         Animation animBounce = AnimationUtils.loadAnimation(getApplicationContext(), animation);
         stack.startAnimation(animBounce);
     }
@@ -237,85 +283,69 @@ public class GameActivity extends BaseActivity {
     private int takeChosenCardId(String cardName) {
         for (Card item :
                 firstDeal) {
-            if(item.name.equals(cardName)){
+            if (item.name.equals(cardName)) {
                 return item.id;
             }
         }
         return -1;
     }
 
-    private void showCoveredCardsOnly(final ArrayList<Card> leftedCards) {
-        resetContentView();
+    private void changeCardViewParams(ImageView cardView, ImageView cardBackView) {
+        //set width
+        cardView.getLayoutParams().width = getWidth() / 10;
+        cardBackView.getLayoutParams().width = getWidth() / 10;
 
-        int i = 0;
-        final int[] pairedClicked = {0};
-        final String[] interpretation = {""};
+        //set visibilities
+        cardView.setVisibility(View.VISIBLE);
+        cardBackView.setVisibility(View.GONE);
 
-        for(final Card card : leftedCards){
-            LayoutInflater mainInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View firstCard = mainInflater.inflate(R.layout.card, null);
-            final View secondCard = mainInflater.inflate(R.layout.card, null);
-            final ImageView cardView = (ImageView) firstCard.findViewById(R.id.card);
-            final ImageView cardBackView = (ImageView) secondCard.findViewById(R.id.card);
+        //set margins
+        ViewGroup.MarginLayoutParams marginParams = new ViewGroup.MarginLayoutParams(cardBackView.getLayoutParams());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(marginParams);
+        marginParams.setMargins(0, 0, 25, 0);
+        cardBackView.setLayoutParams(layoutParams);
 
-            cardView.getLayoutParams().width = getWidth() / 10;
-            cardBackView.getLayoutParams().width = getWidth() / 10;
+        //set image src
+        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(cardView);
+        Picasso.with(GameActivity.this).load(R.drawable.card_back).into(cardBackView);
+    }
 
-            cardView.setVisibility(View.VISIBLE);
-            cardBackView.setVisibility(View.GONE);
-            Picasso.with(GameActivity.this).load(R.drawable.card_back).into(cardView);
-            Picasso.with(GameActivity.this).load(R.drawable.card_back).into(cardBackView);
-
-            if(i>=0 && i<4) {
-                firstRow.addView(firstCard);
-                firstRow.addView(secondCard);
-                utils.SlideLeft(firstCard, GameActivity.this, "fast");
-
-            }else{
-                if(i<8) {
-                    secondRow.addView(firstCard);
-                    secondRow.addView(secondCard);
-                    utils.SlideLeft(firstCard, GameActivity.this, "fast");
-                }
-            }
-            firstCard.setId(card.id);
-            firstCard.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (pairedClicked[0] < 8) {
-                        Card cardOver = getRandomCard();
-                        Variables.leftedCards.add(cardOver);
-                        Picasso.with(GameActivity.this).load(card.imageId).into(cardView);
-                        Picasso.with(GameActivity.this).load(cardOver.imageId).into(cardBackView);
-                        ViewGroup.MarginLayoutParams marginParams = new ViewGroup.MarginLayoutParams(cardBackView.getLayoutParams());
-                        marginParams.setMargins(0, 0, 25, 0);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(marginParams);
-                        cardBackView.setLayoutParams(layoutParams);
-                        cardBackView.setVisibility(View.VISIBLE);
-                        utils.SlideLeft(cardView, GameActivity.this, "fast");
-                        utils.SlideLeft(cardBackView, GameActivity.this, "slow");
-                        interpretation[0] = interpretation[0] + card.desc + " / " + cardOver.desc + "\n";
-                        interpretationView.setText(interpretation[0]);
-                        firstCard.setClickable(false);
-                        if (pairedClicked[0] == 7) {
-//                            Button mixAgainBt = (Button) findViewById(R.id.bt_mix_again);
-//                            mixAgainBt.setVisibility(View.VISIBLE);
-                            continueButton.setText("PROMEŠAJ PONOVO");
-                            continueButton.setVisibility(View.VISIBLE);
-                            continueButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    MixAgain(v);
-                                }
-                            });
-                        }
-                        pairedClicked[0]++;
-                    }
-                }
-
-            });
-            i++;
+    private void putCardViewToRow(int cardIndex, View firstCard, View secondCard) {
+        LinearLayout row = getRowByCardIndex(cardIndex);
+        if (row != null) {
+            row.addView(firstCard);
+            row.addView(secondCard);
+            utils.SlideLeft(firstCard, GameActivity.this, "fast");
         }
+    }
+
+    private LinearLayout getRowByCardIndex(int cardIndex) {
+        if (cardIndex < 8) {
+            if (cardIndex >= 0 && cardIndex < 4) {
+                return firstRow;
+            }
+            return secondRow;
+        }
+        return null;
+    }
+
+    private void showCardPairInterpretation(ArrayList<CardPair> cardPairs, int clickedCardId) {
+        for (CardPair cardPair :
+                cardPairs) {
+            if ((clickedCardId == cardPair.getCard().id) ||
+                    clickedCardId == cardPair.getCardOver().id) {
+                ArrayList<Card> pairedCards = new ArrayList<>();
+                pairedCards.add(cardPair.getCard());
+                pairedCards.add(cardPair.getCardOver());
+                showCardDescriptionDialog(getString(R.string.first_part_title_explaination), pairedCards);
+            }
+        }
+    }
+
+    private void showMixAgainButton() {
+        gameActionButton.setText(getString(R.string.mix_again));
+        gameActionButton.setVisibility(View.VISIBLE);
+        gameActionButton.setOnClickListener(this::MixAgain);
     }
 
     private void resetContentView() {
@@ -346,9 +376,9 @@ public class GameActivity extends BaseActivity {
     }
 
     private Card getRandomCard() {
-        Log.v("Remain: ",""+remain);
+        Log.v("Remain: ", "" + remain);
         Card result = new Card();
-        if(remain>0){
+        if (remain > 0) {
             Random r = new Random();
             int next = r.nextInt(remain);
             result = cards.get(next);
@@ -366,7 +396,7 @@ public class GameActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.help:
                 showHelpDialog(getString(R.string.juju_first_part_title), getString(R.string.first_part_explanation));
                 return true;

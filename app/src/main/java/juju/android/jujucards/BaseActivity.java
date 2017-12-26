@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import org.androidannotations.annotations.EBean;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 /**
  * Created by Milos on 7/16/2017.
  */
@@ -111,6 +113,15 @@ public class BaseActivity extends AppCompatActivity {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ConfirmationDialogFragment confirmationDialogFragment = ConfirmationDialogFragment.newInstance(title, message);
         confirmationDialogFragment.show(fragmentManager, "dialog");
+        transaction.commit();
+    }
+
+    public void showCardDescriptionDialog(String title, ArrayList<Card> cards) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        CardDescriptionDialogFragment cardDescriptionDialogFragment = CardDescriptionDialogFragment.newInstance(title, cards);
+        cardDescriptionDialogFragment.show(fragmentManager, "dialog");
         transaction.commit();
     }
 

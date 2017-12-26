@@ -56,6 +56,8 @@
     <string name="choose_card_for_hiding">Izaberite karte koje želite da pokrijete.</string>
     <string name="first_covered_card_message">Prva karta koja se pokriva je Vaša statusna karta. Nakon toga odaberite karte koje Vas zanimaju.</string>
     <string name="juju_first_part_title">JuJu - prvi deo</string>
+    <string name="mix_again">PROMEŠAJ PONOVO</string>
+    <string name="first_part_title_explaination">JuJu - Tumačenje</string>
     <string-array name="age_rang">
         <item>manje od 35</item>
         <item>35–60</item>

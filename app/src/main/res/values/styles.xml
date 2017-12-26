@@ -18,6 +18,32 @@
         <item name="max_visible">4</item>
     </style>
 
+    <style name="CardDescriptionDialog">
+        <item name="android:background">@color/dialog_background</item>
+        <item name="android:textColor">@color/dialog_text</item>
+    </style>
+
+    <style name="CardDescriptionDialog.Line">
+        <item name="android:background">@color/dialog_line_background</item>
+    </style>
+
+    <style name="CardDescriptionDialog.Title" parent="ConfirmationDialog">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="CardDescriptionDialog.Description" parent="ConfirmationDialog">
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="CardDescriptionDialog.Button" parent="ConfirmationDialog">
+        <item name="android:textColor">@color/dialog_background</item>
+        <item name="android:background">@color/dialog_text</item>
+        <item name="android:padding">2dp</item>
+    </style>
+
     <style name="ConfirmationDialog">
         <item name="android:background">@color/dialog_background</item>
         <item name="android:textColor">@color/dialog_text</item>

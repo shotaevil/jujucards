@@ -1,6 +1,8 @@
 package juju.android.jujucards;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +10,7 @@ import java.util.Arrays;
 /**
  * Created by arjun on 4/25/16.
  */
-public class Card {
+public class Card implements Parcelable{
     public int id;
     public String name;
     String desc;
@@ -34,6 +36,27 @@ public class Card {
         this.parentViewId = parentViewId;
         this.isFlipped = false;
     }
+
+    protected Card(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        desc = in.readString();
+        imageId = in.readInt();
+        parentViewId = in.readInt();
+        isFlipped = in.readByte() != 0;
+    }
+
+    public static final Creator<Card> CREATOR = new Creator<Card>() {
+        @Override
+        public Card createFromParcel(Parcel in) {
+            return new Card(in);
+        }
+
+        @Override
+        public Card[] newArray(int size) {
+            return new Card[size];
+        }
+    };
 
     public boolean isFlipped() {
         return isFlipped;
@@ -91,5 +114,18 @@ public class Card {
             }
         }
         return results;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeString(desc);
+        parcel.writeInt(imageId);
     }
 }
